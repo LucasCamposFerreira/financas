@@ -31,10 +31,16 @@
       <button type="submit">Calcular Valores</button>
     </form>
 
-    <div v-if="dizimo !== null" class="resultados">
-      <h2>Resultados</h2>
-      <p><strong>Dízimo (10%):</strong> R$ {{ dizimo.toFixed(2) }}</p>
-      <p><strong>Receita após Dízimo:</strong> R$ {{ receitaAposDizimo.toFixed(2) }}</p>
+    <!-- Card de Resultados do Dízimo e Receita após Dízimo -->
+    <div v-if="dizimo !== null" class="card-resultados">
+      <div class="resultado-item">
+        <p><strong>Dízimo (10%):</strong></p>
+        <p class="valor">R$ {{ dizimo.toFixed(2) }}</p>
+      </div>
+      <div class="resultado-item">
+        <p><strong>Receita após Dízimo:</strong></p>
+        <p class="valor">R$ {{ receitaAposDizimo.toFixed(2) }}</p>
+      </div>
     </div>
 
     <table v-if="valoresCalculados.length" id="tabela">
@@ -116,13 +122,33 @@ form div {
   margin-bottom: 1rem;
 }
 
-.resultados {
-  margin-top: 1rem;
+.card-resultados {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.resultado-item {
+  text-align: center;
+}
+
+.resultado-item p {
+  margin: 0.5rem 0;
+}
+
+.valor {
+  font-size: 1.2em;
+  color: #4CAF50;
+  font-weight: bold;
 }
 
 table {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   border-collapse: collapse;
 }
 
@@ -138,5 +164,10 @@ button {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #45a049;
 }
 </style>
