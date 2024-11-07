@@ -1,0 +1,125 @@
+<template>
+  <div id="app">
+    <h1>Orçamento por Categorias</h1>
+
+    <form @submit.prevent="calcularValores">
+      <div v-for="(categoria, index) in categorias" :key="index">
+        <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
+        <input
+          type="number"
+          v-model.number="categoria.percentual"
+          min="0"
+          max="100"
+          step="0.01"
+          placeholder="Informe a porcentagem"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="receita">Receita Total:</label>
+        <input
+          type="number"
+          v-model.number="receita"
+          min="0"
+          step="0.01"
+          placeholder="Informe o valor da receita"
+          required
+        />
+      </div>
+
+      <button type="submit">Calcular Valores</button>
+    </form>
+
+    <table v-if="valoresCalculados.length" id="tabela">
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th>Porcentagem (%)</th>
+          <th>Valor (R$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(valor, index) in valoresCalculados" :key="index">
+          <td>{{ valor.nome }}</td>
+          <td>{{ valor.percentual }}</td>
+          <td>{{ valor.valor.toFixed(2) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button @click="exportarTabela">Exportar Tabela como PNG</button>
+  </div>
+</template>
+
+<script>
+import html2canvas from 'html2canvas';
+
+export default {
+  data() {
+    return {
+      categorias: [
+        { nome: "Investimentos", percentual: 0 },
+        { nome: "Custos fixos", percentual: 0 },
+        { nome: "Conforto", percentual: 0 },
+        { nome: "Prazeres", percentual: 0 },
+        { nome: "Aprendizado", percentual: 0 },
+      ],
+      receita: 0,
+      valoresCalculados: [],
+    };
+  },
+  methods: {
+    calcularValores() {
+      this.valoresCalculados = this.categorias.map((categoria) => {
+        return {
+          nome: categoria.nome,
+          percentual: categoria.percentual,
+          valor: (this.receita * categoria.percentual) / 100,
+        };
+      });
+    },
+    exportarTabela() {
+      const tabela = document.getElementById("tabela");
+      html2canvas(tabela).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = "tabela_orcamento.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    },
+  },
+};
+</script>
+
+<style>
+#app {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+form div {
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
