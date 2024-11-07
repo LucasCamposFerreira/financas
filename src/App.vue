@@ -2,6 +2,12 @@
   <div id="app">
     <h1>Orçamento por Categorias</h1>
 
+    <!-- Botões para selecionar presets -->
+    <div class="presets">
+      <button @click="aplicarPreset('Alice')">Preset - Alice</button>
+      <button @click="aplicarPreset('Lucas')">Preset - Lucas</button>
+    </div>
+
     <form @submit.prevent="calcularValores">
       <div v-for="(categoria, index) in categorias" :key="index">
         <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
@@ -11,7 +17,6 @@
           min="0"
           max="100"
           step="0.01"
-          placeholder="Informe a porcentagem"
           required
         />
       </div>
@@ -31,7 +36,6 @@
       <button type="submit">Calcular Valores</button>
     </form>
 
-    <!-- Card de Resultados do Dízimo e Receita após Dízimo -->
     <div v-if="dizimo !== null" class="card-resultados">
       <div class="resultado-item">
         <p><strong>Dízimo (10%):</strong></p>
@@ -71,11 +75,11 @@ export default {
   data() {
     return {
       categorias: [
-        { nome: "Investimentos", percentual: 46.3 },
-        { nome: "Custos fixos", percentual: 32.7 },
-        { nome: "Conforto", percentual: 15.0 },
-        { nome: "Prazeres", percentual: 10.0 },
-        { nome: "Aprendizado", percentual: 5.0 },
+        { nome: "Investimentos", percentual: 0 },
+        { nome: "Custos fixos", percentual: 0 },
+        { nome: "Conforto", percentual: 0 },
+        { nome: "Prazeres", percentual: 0 },
+        { nome: "Aprendizado", percentual: 0 },
       ],
       receita: 0,
       dizimo: null,
@@ -84,12 +88,29 @@ export default {
     };
   },
   methods: {
+    aplicarPreset(preset) {
+      if (preset === "Alice") {
+        this.categorias = [
+          { nome: "Investimentos", percentual: 46.3 },
+          { nome: "Custos fixos", percentual: 32.7 },
+          { nome: "Conforto", percentual: 15.0 },
+          { nome: "Prazeres", percentual: 10.0 },
+          { nome: "Aprendizado", percentual: 5.0 },
+        ];
+      } else if (preset === "Lucas") {
+        this.categorias = [
+          { nome: "Investimentos", percentual: 34.3 },
+          { nome: "Custos fixos", percentual: 35.7 },
+          { nome: "Conforto", percentual: 15.0 },
+          { nome: "Prazeres", percentual: 10.0 },
+          { nome: "Aprendizado", percentual: 5.0 },
+        ];
+      }
+    },
     calcularValores() {
-      // Calcular o dízimo (10% da receita)
       this.dizimo = this.receita * 0.1;
       this.receitaAposDizimo = this.receita - this.dizimo;
 
-      // Calcular valores de cada categoria com base na receita após o dízimo
       this.valoresCalculados = this.categorias.map((categoria) => {
         return {
           nome: categoria.nome,
@@ -116,6 +137,12 @@ export default {
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
+}
+
+.presets {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
 }
 
 form div {
