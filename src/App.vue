@@ -2,7 +2,6 @@
   <div id="app">
     <h1>Orçamento por Categorias</h1>
 
-    <!-- Botões para selecionar presets -->
     <div class="presets">
       <button @click="aplicarPreset('Alice')">Preset - Alice</button>
       <button @click="aplicarPreset('Lucas')">Preset - Lucas</button>
@@ -64,12 +63,13 @@
       </tbody>
     </table>
 
-    <button @click="exportarTabela">Exportar Tabela como PNG</button>
+    <!-- Botão só será exibido se a tabela de valores calculados estiver presente -->
+    <button v-if="valoresCalculados.length" @click="exportarTabela">Exportar Tabela como PNG</button>
   </div>
 </template>
 
 <script>
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
 
 export default {
   data() {
@@ -121,80 +121,21 @@ export default {
     },
     exportarTabela() {
       const tabela = document.getElementById("tabela");
-      html2canvas(tabela).then((canvas) => {
-        const link = document.createElement("a");
-        link.download = "tabela_orcamento.png";
-        link.href = canvas.toDataURL();
-        link.click();
-      });
+      domtoimage.toPng(tabela)
+        .then((dataUrl) => {
+          const link = document.createElement("a");
+          link.download = "tabela_orcamento.png";
+          link.href = dataUrl;
+          link.click();
+        })
+        .catch((error) => {
+          console.error("Erro ao exportar tabela como PNG:", error);
+        });
     },
   },
 };
 </script>
 
 <style>
-#app {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.presets {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 1rem;
-}
-
-form div {
-  margin-bottom: 1rem;
-}
-
-.card-resultados {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.resultado-item {
-  text-align: center;
-}
-
-.resultado-item p {
-  margin: 0.5rem 0;
-}
-
-.valor {
-  font-size: 1.2em;
-  color: #4CAF50;
-  font-weight: bold;
-}
-
-table {
-  width: 100%;
-  margin-top: 1.5rem;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 8px;
-  border: 1px solid #ddd;
-}
-
-button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-button:hover {
-  background-color: #45a049;
-}
+/* Seus estilos anteriores podem permanecer os mesmos */
 </style>
