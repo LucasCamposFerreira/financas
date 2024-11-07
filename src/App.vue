@@ -31,6 +31,12 @@
       <button type="submit">Calcular Valores</button>
     </form>
 
+    <div v-if="dizimo !== null" class="resultados">
+      <h2>Resultados</h2>
+      <p><strong>Dízimo (10%):</strong> R$ {{ dizimo.toFixed(2) }}</p>
+      <p><strong>Receita após Dízimo:</strong> R$ {{ receitaAposDizimo.toFixed(2) }}</p>
+    </div>
+
     <table v-if="valoresCalculados.length" id="tabela">
       <thead>
         <tr>
@@ -66,16 +72,23 @@ export default {
         { nome: "Aprendizado", percentual: 0 },
       ],
       receita: 0,
+      dizimo: null,
+      receitaAposDizimo: null,
       valoresCalculados: [],
     };
   },
   methods: {
     calcularValores() {
+      // Calcular o dízimo (10% da receita)
+      this.dizimo = this.receita * 0.1;
+      this.receitaAposDizimo = this.receita - this.dizimo;
+
+      // Calcular valores de cada categoria com base na receita após o dízimo
       this.valoresCalculados = this.categorias.map((categoria) => {
         return {
           nome: categoria.nome,
           percentual: categoria.percentual,
-          valor: (this.receita * categoria.percentual) / 100,
+          valor: (this.receitaAposDizimo * categoria.percentual) / 100,
         };
       });
     },
@@ -101,6 +114,10 @@ export default {
 
 form div {
   margin-bottom: 1rem;
+}
+
+.resultados {
+  margin-top: 1rem;
 }
 
 table {
