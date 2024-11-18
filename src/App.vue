@@ -92,8 +92,8 @@ export default {
       if (preset === "Alice") {
         this.categorias = [
           { nome: "Investimentos", percentual: 46.3 },
-          { nome: "Custos fixos", percentual: 32.7 },
-          { nome: "Conforto", percentual: 15.0 },
+          { nome: "Custos fixos", percentual: 28.7 },
+          { nome: "Conforto", percentual: 10.0 },
           { nome: "Prazeres", percentual: 10.0 },
           { nome: "Aprendizado", percentual: 5.0 },
         ];
