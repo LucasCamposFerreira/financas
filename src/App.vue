@@ -122,8 +122,8 @@ export default {
         ];
       } else if (preset === "lucas") {
         this.categoriasLucas = [
-          { nome: "Custo", percentual: 42.00 },
-          { nome: "Investimento", percentual: 51.00 },
+          { nome: "Custo", percentual: 41.00 },
+          { nome: "Investimento", percentual: 52.00 },
           { nome: "Se precisar", percentual: 3.00 },
           { nome: "Lazer", percentual: 4.00 },
         ];
