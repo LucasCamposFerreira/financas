@@ -8,44 +8,48 @@
     </div>
 
     <form @submit.prevent="calcularValores">
-      <div v-if="presetAtivo === 'alice'" v-for="(categoria, index) in categoriasAlice" :key="index">
-        <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
-        <input
-          type="number"
-          v-model.number="categoria.percentual"
-          min="0"
-          max="100"
-          step="0.01"
-          required
-        />
-      </div>
+  <template v-if="presetAtivo === 'alice'">
+    <div v-for="(categoria, index) in categoriasAlice" :key="index">
+      <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
+      <input
+        type="number"
+        v-model.number="categoria.percentual"
+        min="0"
+        max="100"
+        step="0.01"
+        required
+      />
+    </div>
+  </template>
 
-      <div v-if="presetAtivo === 'lucas'" v-for="(categoria, index) in categoriasLucas" :key="index">
-        <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
-        <input
-          type="number"
-          v-model.number="categoria.percentual"
-          min="0"
-          max="100"
-          step="0.01"
-          required
-        />
-      </div>
+  <template v-else-if="presetAtivo === 'lucas'">
+    <div v-for="(categoria, index) in categoriasLucas" :key="index">
+      <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
+      <input
+        type="number"
+        v-model.number="categoria.percentual"
+        min="0"
+        max="100"
+        step="0.01"
+        required
+      />
+    </div>
+  </template>
 
-      <div>
-        <label for="receita">Receita Total:</label>
-        <input
-          type="number"
-          v-model.number="receita"
-          min="0"
-          step="0.01"
-          placeholder="Informe o valor da receita"
-          required
-        />
-      </div>
+  <div>
+    <label for="receita">Receita Total:</label>
+    <input
+      type="number"
+      v-model.number="receita"
+      min="0"
+      step="0.01"
+      placeholder="Informe o valor da receita"
+      required
+    />
+  </div>
 
-      <button type="submit">Calcular Valores</button>
-    </form>
+  <button type="submit">Calcular Valores</button>
+</form>
 
     <div v-if="dizimo !== null" class="card-resultados">
       <div class="resultado-item">
