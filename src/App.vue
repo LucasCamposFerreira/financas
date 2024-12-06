@@ -3,12 +3,24 @@
     <h1>Orçamento por Categorias</h1>
 
     <div class="presets">
-      <button @click="aplicarPreset('Alice')">Preset - Alice</button>
-      <button @click="aplicarPreset('Lucas')">Preset - Lucas</button>
+      <button @click="ativarPreset('alice')">Preset - Alice</button>
+      <button @click="ativarPreset('lucas')">Preset - Lucas</button>
     </div>
 
     <form @submit.prevent="calcularValores">
-      <div v-for="(categoria, index) in categorias" :key="index">
+      <div v-if="presetAtivo === 'alice'" v-for="(categoria, index) in categoriasAlice" :key="index">
+        <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
+        <input
+          type="number"
+          v-model.number="categoria.percentual"
+          min="0"
+          max="100"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div v-if="presetAtivo === 'lucas'" v-for="(categoria, index) in categoriasLucas" :key="index">
         <label :for="categoria.nome">{{ categoria.nome }} (%):</label>
         <input
           type="number"
@@ -63,23 +75,29 @@
       </tbody>
     </table>
 
-    <!-- Botão só será exibido se a tabela de valores calculados estiver presente -->
     <button v-if="valoresCalculados.length" @click="exportarTabela">Exportar Tabela como PNG</button>
   </div>
 </template>
 
 <script>
-import domtoimage from 'dom-to-image';
+import domtoimage from "dom-to-image";
 
 export default {
   data() {
     return {
-      categorias: [
+      presetAtivo: "alice",
+      categoriasAlice: [
         { nome: "Investimentos", percentual: 0 },
         { nome: "Custos fixos", percentual: 0 },
         { nome: "Conforto", percentual: 0 },
         { nome: "Prazeres", percentual: 0 },
         { nome: "Aprendizado", percentual: 0 },
+      ],
+      categoriasLucas: [
+        { nome: "Custo", percentual: 0 },
+        { nome: "Investimento", percentual: 0 },
+        { nome: "Se precisar", percentual: 0 },
+        { nome: "Lazer", percentual: 0 },
       ],
       receita: 0,
       dizimo: null,
@@ -88,22 +106,22 @@ export default {
     };
   },
   methods: {
-    aplicarPreset(preset) {
-      if (preset === "Alice") {
-        this.categorias = [
+    ativarPreset(preset) {
+      this.presetAtivo = preset;
+      if (preset === "alice") {
+        this.categoriasAlice = [
           { nome: "Investimentos", percentual: 46.3 },
           { nome: "Custos fixos", percentual: 28.7 },
           { nome: "Conforto", percentual: 10.0 },
           { nome: "Prazeres", percentual: 10.0 },
           { nome: "Aprendizado", percentual: 5.0 },
         ];
-      } else if (preset === "Lucas") {
-        this.categorias = [
-          { nome: "Investimentos", percentual: 34.3 },
-          { nome: "Custos fixos", percentual: 35.7 },
-          { nome: "Conforto", percentual: 15.0 },
-          { nome: "Prazeres", percentual: 10.0 },
-          { nome: "Aprendizado", percentual: 5.0 },
+      } else if (preset === "lucas") {
+        this.categoriasLucas = [
+          { nome: "Custo", percentual: 41.67 },
+          { nome: "Investimento", percentual: 50.71 },
+          { nome: "Se precisar", percentual: 3.38 },
+          { nome: "Lazer", percentual: 4.24 },
         ];
       }
     },
@@ -111,7 +129,9 @@ export default {
       this.dizimo = this.receita * 0.1;
       this.receitaAposDizimo = this.receita - this.dizimo;
 
-      this.valoresCalculados = this.categorias.map((categoria) => {
+      const categoriasAtuais = this.presetAtivo === "alice" ? this.categoriasAlice : this.categoriasLucas;
+
+      this.valoresCalculados = categoriasAtuais.map((categoria) => {
         return {
           nome: categoria.nome,
           percentual: categoria.percentual,
@@ -121,7 +141,8 @@ export default {
     },
     exportarTabela() {
       const tabela = document.getElementById("tabela");
-      domtoimage.toPng(tabela)
+      domtoimage
+        .toPng(tabela)
         .then((dataUrl) => {
           const link = document.createElement("a");
           link.download = "tabela_orcamento.png";
@@ -183,7 +204,8 @@ table {
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   padding: 8px;
   border: 1px solid #ddd;
 }
